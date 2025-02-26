@@ -1,0 +1,15 @@
+*.ts
+dist
+!index.ts
+!character.ts
+.env
+node_modules
+dist/
+
+
+.next/
+
+db.sqlite
+.idea
+.tee-cloud
+config.bat
