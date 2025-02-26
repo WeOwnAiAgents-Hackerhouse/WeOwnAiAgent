@@ -1,71 +1,58 @@
 'use client';
 
-import { FaReact } from 'react-icons/fa';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 
-
-
-import React from 'react';
-import { Button } from 'components/ui/button';
-import { Input } from 'components/ui/input'; // Importing Input component
-import { Logo } from 'components/logo';
-const Page: React.FC = () => {
+export default function HomePage() {
   return (
-    <div className="flex flex-col min-h-screen bg-gray-900 text-white">
-      {/* Header */}
-      <header className="flex items-center justify-between p-4 bg-gray-800">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-[#0a0b14] text-white">
+      <nav className="fixed top-0 w-full flex justify-between items-center p-6">
         <div className="flex items-center">
-          <Logo />
+          <span className="text-xl font-bold"> WeOwn Agent Box </span>
         </div>
-        <nav className="flex-grow mx-4">
-          <ul className="flex justify-center space-x-4">
-            <li><Button variant="link">Features</Button></li>
-            <li><Button variant="link">Pricing</Button></li>
-            <li><Button variant="link">Blog</Button></li>
-            <li><Button variant="link">Documentation</Button></li>
-          </ul>
-        </nav>
-        <div className="flex items-center">
-          <Button variant="outline">Login</Button>
+        <div className="flex space-x-6">
+          <Link href="#features">Features</Link>
+          <Link href="#pricing">Pricing</Link>
+          <Link href="#blog">Blog</Link>
+          <Link href="#documentation">Documentation</Link>
         </div>
-      </header>
+        <div>
+          <Link href="/login">
+            <Button variant="ghost" className="text-white hover:bg-gray-800">Login</Button>
+          </Link>
+        </div>
+      </nav>
 
-      {/* Main Content */}
-      <main className="flex-grow flex flex-col items-center justify-center text-center p-4">
-        <h1 className="text-4xl font-bold mb-4">An example app built using Next.js 13 server components.</h1>
-        <p className="mb-6">I'm building a web app with Next.js 13 and open sourcing everything. Follow along as we figure this out together.</p>
-        <div className="flex space-x-4 mb-8">
-          <Button variant="default">Get Started</Button>
-          <Button variant="secondary">GitHub</Button>
+      <div className="max-w-4xl mx-auto text-center px-4 mt-20">
+        <div className="mb-12">
+          <Link href="https://twitter.com/yourusername" target="_blank">
+            <Button variant="outline" className="rounded-full bg-[#1a1b2e] text-white border-none hover:bg-[#2a2b3e]">
+              Follow along  our channel
+            </Button>
+          </Link>
         </div>
 
-        {/* Features Section */}
-        <section className="w-full max-w-4xl mx-auto text-left">
-          <h2 className="text-3xl font-bold mb-4">Features</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="p-4 bg-gray-800 rounded-lg">
-              <h3 className="text-xl font-semibold">Feature 1</h3>
-              <p>Description of feature 1.</p>
-            </div>
-            <div className="p-4 bg-gray-800 rounded-lg">
-              <h3 className="text-xl font-semibold">Feature 2</h3>
-              <p>Description of feature 2.</p>
-            </div>
-            <div className="p-4 bg-gray-800 rounded-lg">
-              <h3 className="text-xl font-semibold">Feature 3</h3>
-              <p>Description of feature 3.</p>
-            </div>
-            <div className="p-4 bg-gray-800 rounded-lg">
-              <h3 className="text-xl font-semibold">Feature 4</h3>
-              <p>Description of feature 4.</p>
-            </div>
-          </div>
-        </section>
-      </main>
-
-      {/* Footer */}
-      <footer className="bg-gray-800 text-center p-4">
-        <p>&copy; {new Date().getFullYear()} Your Company. All rights reserved.</p>
-      </footer>
+        <h1 className="text-5xl md:text-7xl font-bold mb-8 leading-tight">
+           We Own Agent Box
+        </h1>
+        
+        <p className="text-xl mb-12 text-gray-300">
+        SaaS platform to setup robust AI agent verticals 
+        </p>
+        
+        <div className="flex flex-col sm:flex-row justify-center gap-4">
+          <Link href="/register">
+            <Button className="w-full sm:w-auto bg-white text-black hover:bg-gray-200">
+              Get Started
+            </Button>
+          </Link>
+          <Link href="https://github.com/yourusername/yourrepo" target="_blank">
+            <Button variant="outline" className="w-full sm:w-auto border-white text-white hover:bg-gray-800">
+              GitHub
+            </Button>
+          </Link>
+        </div>
+      </div>
     </div>
   );
-};
+}
