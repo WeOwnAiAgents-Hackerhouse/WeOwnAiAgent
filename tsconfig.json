@@ -1,51 +1,33 @@
 {
   "compilerOptions": {
     "target": "ESNext",
-    "module": "ESNext",
-    "lib": [
-      "ESNext",
-      "dom",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
-    "moduleResolution": "Bundler",
-    "outDir": "./dist",
-    "rootDir": ".",
-    "baseUrl": ".",
-    "paths": {
-      "@components/*": [
-        "src/components/*"
-      ]
-    },
-    "strict": false,
-    "esModuleInterop": true,
-    "jsx": "preserve",
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": false,
-    "allowImportingTsExtensions": true,
-    "declaration": true,
-    "resolveJsonModule": true,
-    "noImplicitAny": false,
-    "checkJs": false,
-    "noEmitOnError": false,
-    "moduleDetection": "force",
-    "allowArbitraryExtensions": true,
+    "strict": true,
     "noEmit": true,
-    "incremental": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
     "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
     "plugins": [
       {
         "name": "next"
       }
-    ]
+    ],
+    "paths": {
+      "@/*": ["./*"]
+    }
   },
   "include": [
-    "**/*.css",
+    "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts"
+    ".next/types/**/*.ts",
+    "next.config.js"
   ],
-  "exclude": [
-    "node_modules"
-  ]
+  "exclude": ["node_modules"]
 }
