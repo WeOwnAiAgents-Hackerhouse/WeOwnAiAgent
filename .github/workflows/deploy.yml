@@ -50,4 +50,4 @@ jobs:
           aws-region: us-east-1
 
       - name: Deploy infrastructure
-        run: cd infra && pnpm run deploy -- --require-approval never
+        run: cd infra && pnpm run deploy -- --require-approval never --verbose
