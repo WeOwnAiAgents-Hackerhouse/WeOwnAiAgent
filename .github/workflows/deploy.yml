@@ -42,7 +42,7 @@ jobs:
       - name: Install dependencies
         run: cd infra && pnpm install
 
-      - name: Configure AWS credentials
+      - name: Configure AWS credentials for deployment
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
