@@ -16,29 +16,49 @@ interface SuggestedActionsProps {
 function PureSuggestedActions({ chatId, append }: SuggestedActionsProps) {
   const suggestedActions = [
     {
-      title: 'What are the advantages',
-      label: 'of using Next.js?',
-      action: 'What are the advantages of using Next.js?',
+      title: 'Model Selection',
+      label: 'Help me choose the right AI model',
+      action: 'I need help selecting the appropriate AI model for my business needs. What options do you recommend?',
     },
     {
-      title: 'Write code to',
-      label: `demonstrate djikstra's algorithm`,
-      action: `Write code to demonstrate djikstra's algorithm`,
+      title: 'Vector Data Integration',
+      label: 'How to integrate my data',
+      action: 'Guide me through the process of integrating my vector data with the platform.',
     },
     {
-      title: 'Help me write an essay',
-      label: `about silicon valley`,
-      action: `Help me write an essay about silicon valley`,
+      title: 'KYC Process',
+      label: 'Know Your Customer verification',
+      action: 'What documents do I need for the KYC process and how does it work?',
     },
     {
-      title: 'What is the weather',
-      label: 'in San Francisco?',
-      action: 'What is the weather in San Francisco?',
+      title: 'Onchain Onboarding',
+      label: 'Blockchain integration process',
+      action: 'Explain the onchain onboarding process and how it secures my data.',
+    },
+    {
+      title: 'SDIRA Process',
+      label: 'Self-Directed IRA setup',
+      action: 'I want to learn about the Self-Directed IRA process and how to get started.',
+    },
+    {
+      title: 'Morpho',
+      label: 'Learn about Morpho DeFi Protocol',
+      action: 'Can you explain what the Morpho DeFi protocol is and how it works?',
+    },
+    {
+      title: 'Uniswap',
+      label: 'Uniswap DEX benefits',
+      action: 'What are the key features and benefits of using the Uniswap protocol for decentralized trading?',
+    },
+    {
+      title: 'Euler-v1',
+      label: 'Euler-v1 protocol overview',
+      action: 'Provide an overview of the Euler-v1 protocol and its role in DeFi lending markets.',
     },
   ];
 
   return (
-    <div className="grid sm:grid-cols-2 gap-2 w-full">
+    <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 w-full">
       {suggestedActions.map((suggestedAction, index) => (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -46,7 +66,8 @@ function PureSuggestedActions({ chatId, append }: SuggestedActionsProps) {
           exit={{ opacity: 0, y: 20 }}
           transition={{ delay: 0.05 * index }}
           key={`suggested-action-${suggestedAction.title}-${index}`}
-          className={index > 1 ? 'hidden sm:block' : 'block'}
+          className={index > 3 && index < 5 ? 'hidden sm:block' : 
+                     index >= 5 ? 'hidden md:block' : 'block'}
         >
           <Button
             variant="ghost"

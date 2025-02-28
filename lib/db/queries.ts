@@ -3,6 +3,7 @@ import 'server-only';
 import { genSaltSync, hashSync } from 'bcrypt-ts';
 import { and, asc, desc, eq, gt, gte, inArray } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/postgres-js';
+import { Agent, AgentExecution, AgentMemory, AgentModel, AgentTool, Attestation, Model, Tool } from './schema';
 import postgres from 'postgres';
 
 import {
@@ -15,6 +16,14 @@ import {
   type Message,
   message,
   vote,
+  agent,
+  model,
+  agentModel,
+  tool,
+  agentTool,
+  agentExecution,
+  agentMemory,
+  attestation,
 } from './schema';
 import { ArtifactKind } from '@/components/artifact';
 
@@ -22,9 +31,20 @@ import { ArtifactKind } from '@/components/artifact';
 // use the Drizzle adapter for Auth.js / NextAuth
 // https://authjs.dev/reference/adapter/drizzle
 
-// biome-ignore lint: Forbidden non-null assertion.
-const client = postgres(process.env.POSTGRES_URL!);
-const db = drizzle(client);
+// Configure database connection
+const dbUrl = process.env.POSTGRES_URL || process.env.DATABASE_URL;
+
+if (!dbUrl) {
+  throw new Error('Database URL is not defined. Please set POSTGRES_URL or DATABASE_URL in your environment');
+}
+
+// Configure connection with proper SSL settings for production
+const client = postgres(dbUrl, {
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : undefined,
+});
+
+// Initialize Drizzle
+export const db = drizzle(client);
 
 export async function getUser(email: string): Promise<Array<User>> {
   try {
@@ -342,6 +362,341 @@ export async function updateChatVisiblityById({
     return await db.update(chat).set({ visibility }).where(eq(chat.id, chatId));
   } catch (error) {
     console.error('Failed to update chat visibility in database');
+    throw error;
+  }
+}
+
+// Agent CRUD operations
+export async function createAgent({
+  name,
+  description,
+  userId,
+  configuration,
+}: {
+  name: string;
+  description?: string;
+  userId: string;
+  configuration: any;
+}) {
+  try {
+    const now = new Date();
+    return await db.insert(agent).values({
+      name,
+      description,
+      userId,
+      configuration,
+      createdAt: now,
+      updatedAt: now,
+    });
+  } catch (error) {
+    console.error('Failed to create agent in database');
+    throw error;
+  }
+}
+
+export async function getAgentById({ id }: { id: string }) {
+  try {
+    const [selectedAgent] = await db.select().from(agent).where(eq(agent.id, id));
+    return selectedAgent;
+  } catch (error) {
+    console.error('Failed to get agent by id from database');
+    throw error;
+  }
+}
+
+export async function getAgentsByUserId({ userId }: { userId: string }) {
+  try {
+    return await db
+      .select()
+      .from(agent)
+      .where(eq(agent.userId, userId))
+      .orderBy(desc(agent.updatedAt));
+  } catch (error) {
+    console.error('Failed to get agents by user id from database');
+    throw error;
+  }
+}
+
+export async function updateAgent({
+  id,
+  name,
+  description,
+  configuration,
+  status,
+  visibility,
+}: {
+  id: string;
+  name?: string;
+  description?: string;
+  configuration?: any;
+  status?: 'active' | 'inactive' | 'error';
+  visibility?: 'public' | 'private';
+}) {
+  try {
+    const updateData: Partial<Agent> = {
+      updatedAt: new Date(),
+    };
+
+    if (name !== undefined) updateData.name = name;
+    if (description !== undefined) updateData.description = description;
+    if (configuration !== undefined) updateData.configuration = configuration;
+    if (status !== undefined) updateData.status = status;
+    if (visibility !== undefined) updateData.visibility = visibility;
+
+    return await db.update(agent).set(updateData).where(eq(agent.id, id));
+  } catch (error) {
+    console.error('Failed to update agent in database');
+    throw error;
+  }
+}
+
+export async function deleteAgentById({ id }: { id: string }) {
+  try {
+    // Delete related records first
+    await db.delete(agentMemory).where(eq(agentMemory.agentId, id));
+    await db.delete(attestation).where(eq(attestation.agentId, id));
+    await db.delete(agentExecution).where(eq(agentExecution.agentId, id));
+    await db.delete(agentTool).where(eq(agentTool.agentId, id));
+    await db.delete(agentModel).where(eq(agentModel.agentId, id));
+    
+    // Then delete the agent
+    return await db.delete(agent).where(eq(agent.id, id));
+  } catch (error) {
+    console.error('Failed to delete agent from database');
+    throw error;
+  }
+}
+
+// Model operations
+export async function getModels() {
+  try {
+    return await db.select().from(model);
+  } catch (error) {
+    console.error('Failed to get models from database');
+    throw error;
+  }
+}
+
+export async function associateModelWithAgent({
+  agentId,
+  modelId,
+  isDefault = false,
+}: {
+  agentId: string;
+  modelId: string;
+  isDefault?: boolean;
+}) {
+  try {
+    return await db.insert(agentModel).values({
+      agentId,
+      modelId,
+      isDefault,
+    });
+  } catch (error) {
+    console.error('Failed to associate model with agent in database');
+    throw error;
+  }
+}
+
+// Tool operations
+export async function getTools() {
+  try {
+    return await db.select().from(tool);
+  } catch (error) {
+    console.error('Failed to get tools from database');
+    throw error;
+  }
+}
+
+export async function associateToolWithAgent({
+  agentId,
+  toolId,
+  configuration,
+}: {
+  agentId: string;
+  toolId: string;
+  configuration?: any;
+}) {
+  try {
+    return await db.insert(agentTool).values({
+      agentId,
+      toolId,
+      configuration,
+    });
+  } catch (error) {
+    console.error('Failed to associate tool with agent in database');
+    throw error;
+  }
+}
+
+// Agent execution operations
+export async function createAgentExecution({
+  agentId,
+  input,
+}: {
+  agentId: string;
+  input?: any;
+}) {
+  try {
+    return await db.insert(agentExecution).values({
+      agentId,
+      startedAt: new Date(),
+      status: 'running',
+      input,
+    });
+  } catch (error) {
+    console.error('Failed to create agent execution in database');
+    throw error;
+  }
+}
+
+export async function updateAgentExecution({
+  id,
+  status,
+  output,
+  error,
+  metrics,
+}: {
+  id: string;
+  status: 'running' | 'completed' | 'failed' | 'cancelled';
+  output?: any;
+  error?: string;
+  metrics?: any;
+}) {
+  try {
+    const updateData: Partial<AgentExecution> = {
+      status,
+    };
+
+    if (status === 'completed' || status === 'failed' || status === 'cancelled') {
+      updateData.completedAt = new Date();
+    }
+
+    if (output !== undefined) updateData.output = output;
+    if (error !== undefined) updateData.error = error;
+    if (metrics !== undefined) updateData.metrics = metrics;
+
+    return await db.update(agentExecution).set(updateData).where(eq(agentExecution.id, id));
+  } catch (error) {
+    console.error('Failed to update agent execution in database');
+    throw error;
+  }
+}
+
+// Agent memory operations
+export async function saveAgentMemory({
+  agentId,
+  key,
+  value,
+  expiresAt,
+}: {
+  agentId: string;
+  key: string;
+  value: any;
+  expiresAt?: Date;
+}) {
+  try {
+    return await db.insert(agentMemory).values({
+      agentId,
+      key,
+      value,
+      createdAt: new Date(),
+      expiresAt,
+    });
+  } catch (error) {
+    console.error('Failed to save agent memory in database');
+    throw error;
+  }
+}
+
+export async function getAgentMemory({
+  agentId,
+  key,
+}: {
+  agentId: string;
+  key?: string;
+}) {
+  try {
+    // Build the where condition based on parameters
+    const whereCondition = key 
+      ? and(eq(agentMemory.agentId, agentId), eq(agentMemory.key, key))
+      : eq(agentMemory.agentId, agentId);
+    
+    return await db
+      .select()
+      .from(agentMemory)
+      .where(whereCondition);
+  } catch (error) {
+    console.error('Failed to get agent memory from database');
+    throw error;
+  }
+}
+
+// Attestation operations
+export async function createAttestation({
+  agentId,
+  type,
+  issuer,
+  subject,
+  data,
+  signature,
+  expiresAt,
+}: {
+  agentId: string;
+  type: 'identity' | 'capability' | 'performance' | 'compliance';
+  issuer: string;
+  subject: string;
+  data: any;
+  signature: string;
+  expiresAt?: Date;
+}) {
+  try {
+    return await db.insert(attestation).values({
+      agentId,
+      type,
+      issuer,
+      subject,
+      data,
+      signature,
+      createdAt: new Date(),
+      expiresAt,
+    });
+  } catch (error) {
+    console.error('Failed to create attestation in database');
+    throw error;
+  }
+}
+
+export async function getAttestationsByAgentId({
+  agentId,
+  type,
+}: {
+  agentId: string;
+  type?: 'identity' | 'capability' | 'performance' | 'compliance';
+}) {
+  try {
+    // Build the where condition based on parameters
+    const whereCondition = type
+      ? and(eq(attestation.agentId, agentId), eq(attestation.revoked, false), eq(attestation.type, type))
+      : and(eq(attestation.agentId, agentId), eq(attestation.revoked, false));
+    
+    return await db
+      .select()
+      .from(attestation)
+      .where(whereCondition);
+  } catch (error) {
+    console.error('Failed to get attestations by agent id from database');
+    throw error;
+  }
+}
+
+export async function revokeAttestation({ id }: { id: string }) {
+  try {
+    return await db.update(attestation)
+      .set({ revoked: true })
+      .where(eq(attestation.id, id));
+  } catch (error) {
+    console.error('Failed to revoke attestation in database');
     throw error;
   }
 }
