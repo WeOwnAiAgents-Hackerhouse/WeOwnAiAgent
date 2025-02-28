@@ -80,18 +80,35 @@ export class AmplifyStack extends cdk.Stack {
                 'export FIREWORKS_API_KEY=$(aws secretsmanager get-secret-value --secret-id agent-box-app-secrets --query SecretString --output text | jq -r \'.FIREWORKS_API_KEY\')',
                 'export AUTH_SECRET=$(aws secretsmanager get-secret-value --secret-id agent-box-app-secrets --query SecretString --output text | jq -r \'.AUTH_SECRET\')',
                 'export DB_PASSWORD=$(aws secretsmanager get-secret-value --secret-id chatbot-db-credentials --query SecretString --output text | jq -r \'.password\')',
+                
+                // Create the database URL with the correct format and save to environment
+                'export DATABASE_ENDPOINT=${DATABASE_ENDPOINT:-localhost:5432}',
                 'export POSTGRES_URL="postgres://postgres:${DB_PASSWORD}@${DATABASE_ENDPOINT}:5432/chatbot"',
-                'echo "OPENAI_API_KEY=${OPENAI_API_KEY}" >> .env',
+                'export DATABASE_URL="postgres://postgres:${DB_PASSWORD}@${DATABASE_ENDPOINT}:5432/chatbot"',
+                
+                // Create .env file for the build process
+                'echo "OPENAI_API_KEY=${OPENAI_API_KEY}" > .env',
                 'echo "FIREWORKS_API_KEY=${FIREWORKS_API_KEY}" >> .env',
                 'echo "AUTH_SECRET=${AUTH_SECRET}" >> .env',
-                'echo "DATABASE_URL=${POSTGRES_URL}" >> .env',
+                'echo "DATABASE_URL=${DATABASE_URL}" >> .env',
+                'echo "POSTGRES_URL=${POSTGRES_URL}" >> .env',
                 'echo "S3_BUCKET_NAME=${S3_BUCKET_NAME}" >> .env',
-                'pnpm run db:migrate', // Run database migrations with pnpm
+                'echo "NODE_ENV=production" >> .env',
+                
+                // Create .env.local as a backup in case some scripts look for it specifically
+                'cp .env .env.local',
+                
+                // Debug - print environment variables (redacted for security)
+                'echo "Database endpoint: ${DATABASE_ENDPOINT}"',
+                'echo "Database URL is configured: $(if [ -n "$DATABASE_URL" ]; then echo "Yes"; else echo "No"; fi)"',
+                
+                // Run database migrations with environment variables explicitly passed
+                'NODE_ENV=production DATABASE_URL=${DATABASE_URL} POSTGRES_URL=${POSTGRES_URL} pnpm run db:migrate',
               ],
             },
             build: {
               commands: [
-                'pnpm run build',
+                'NODE_ENV=production pnpm run build',
               ],
             },
           },
@@ -100,7 +117,7 @@ export class AmplifyStack extends cdk.Stack {
             files: ['**/*'],
           },
           cache: {
-            paths: ['node_modules/**/*', '.next/cache/**/*', '.pnpm-store/**/*'],
+            paths: ['node_modules/**/*', '.next/cache/**/*'],
           },
         },
       }),
