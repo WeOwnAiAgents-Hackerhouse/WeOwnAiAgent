@@ -4,24 +4,24 @@ import * as amplify from '@aws-cdk/aws-amplify-alpha';
 import * as secretsmanager from 'aws-cdk-lib/aws-secretsmanager';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import * as codebuild from 'aws-cdk-lib/aws-codebuild';
-
-// importing the dotenv
+import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as dotenv from 'dotenv';
 
 dotenv.config();
 
-// Add this interface to your amplify-stack.ts file
 export interface AmplifyStackProps extends cdk.StackProps {
   databaseEndpoint: string;
+  databaseSecret: secretsmanager.ISecret;
+  storageBucket: s3.Bucket;
 }
 
 export class AmplifyStack extends cdk.Stack {
   public readonly appUrl: cdk.CfnOutput;
-
+  
   constructor(scope: Construct, id: string, props: AmplifyStackProps) {
     super(scope, id, props);
 
-    // Create a secret for environment variables
+    // Create a secret for application environment variables
     const appSecrets = new secretsmanager.Secret(this, 'AgentBoxAppSecrets', {
       secretName: 'agent-box-app-secrets',
       generateSecretString: {
@@ -38,14 +38,13 @@ export class AmplifyStack extends cdk.Stack {
     const amplifyApp = new amplify.App(this, 'AgentBoxApp', {
       appName: 'WeOwnAgentBox',
       sourceCodeProvider: new amplify.GitHubSourceCodeProvider({
-        owner: 'your-github-username', // Replace with your GitHub username
-        repository: 'your-repo-name',   // Replace with your repository name
+        owner: process.env.GITHUB_OWNER || 'your-github-username', // Replace with your GitHub username or use env var
+        repository: process.env.GITHUB_REPO || 'your-repo-name',    // Replace with your repository name or use env var
         oauthToken: cdk.SecretValue.secretsManager('github-token'), // Create this secret manually in AWS Secrets Manager
       }),
       environmentVariables: {
         NODE_ENV: 'production',
-        NEXT_PUBLIC_WEB_URL: 'https://main.your-app-id.amplifyapp.com', // This will be updated after deployment
-        // Don't put secrets here
+        S3_BUCKET_NAME: props.storageBucket.bucketName,
       },
       buildSpec: codebuild.BuildSpec.fromObjectToYaml({
         version: '1.0',
@@ -54,15 +53,18 @@ export class AmplifyStack extends cdk.Stack {
             preBuild: {
               commands: [
                 'npm ci',
-                // Use AWS CLI to get secrets at build time instead of synthesis time
+                // Get secrets during build time
                 'export OPENAI_API_KEY=$(aws secretsmanager get-secret-value --secret-id agent-box-app-secrets --query SecretString --output text | jq -r \'.OPENAI_API_KEY\')',
                 'export FIREWORKS_API_KEY=$(aws secretsmanager get-secret-value --secret-id agent-box-app-secrets --query SecretString --output text | jq -r \'.FIREWORKS_API_KEY\')',
                 'export AUTH_SECRET=$(aws secretsmanager get-secret-value --secret-id agent-box-app-secrets --query SecretString --output text | jq -r \'.AUTH_SECRET\')',
-                'export POSTGRES_URL="postgres://postgres:$(aws secretsmanager get-secret-value --secret-id chatbot-db-credentials --query SecretString --output text | jq -r \'.password\')@${DATABASE_ENDPOINT}:5432/chatbot"',
+                'export DB_PASSWORD=$(aws secretsmanager get-secret-value --secret-id chatbot-db-credentials --query SecretString --output text | jq -r \'.password\')',
+                'export POSTGRES_URL="postgres://postgres:${DB_PASSWORD}@${DATABASE_ENDPOINT}:5432/chatbot"',
                 'echo "OPENAI_API_KEY=${OPENAI_API_KEY}" >> .env',
                 'echo "FIREWORKS_API_KEY=${FIREWORKS_API_KEY}" >> .env',
                 'echo "AUTH_SECRET=${AUTH_SECRET}" >> .env',
                 'echo "DATABASE_URL=${POSTGRES_URL}" >> .env',
+                'echo "S3_BUCKET_NAME=${S3_BUCKET_NAME}" >> .env',
+                'npm run db:migrate', // Run database migrations
               ],
             },
             build: {
@@ -76,15 +78,26 @@ export class AmplifyStack extends cdk.Stack {
             files: ['**/*'],
           },
           cache: {
-            paths: ['node_modules/**/*'],
+            paths: ['node_modules/**/*', '.next/cache/**/*'],
           },
         },
       }),
     });
 
-    // Give Amplify build permissions to access secrets
-    const amplifyRole = iam.Role.fromRoleArn(this, 'AmplifyRole', amplifyApp.appId);
+    // Create appropriate IAM permissions for Amplify
+    const amplifyRole = new iam.Role(this, 'AmplifyRole', {
+      assumedBy: new iam.ServicePrincipal('amplify.amazonaws.com'),
+      managedPolicies: [
+        iam.ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSAmplifyFullAccess'),
+      ],
+    });
+    
+    // Grant read access to secrets
     appSecrets.grantRead(amplifyRole);
+    props.databaseSecret.grantRead(amplifyRole);
+    
+    // Grant S3 bucket permissions
+    props.storageBucket.grantReadWrite(amplifyRole);
 
     // Add environment variables that aren't secrets
     amplifyApp.addEnvironment('DATABASE_ENDPOINT', props.databaseEndpoint);
@@ -94,14 +107,6 @@ export class AmplifyStack extends cdk.Stack {
       autoBuild: true,
       stage: 'PRODUCTION',
     });
-
-    // Create a custom domain if needed
-    // const domain = amplifyApp.addDomain('yourdomain.com', {
-    //   enableAutoSubdomain: true,
-    //   autoSubdomainCreationPatterns: ['*', 'pr*'],
-    // });
-    // domain.mapRoot(mainBranch);
-    // domain.mapSubDomain(mainBranch, 'www');
 
     // Output the Amplify app URL
     this.appUrl = new cdk.CfnOutput(this, 'AmplifyAppURL', {
