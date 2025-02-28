@@ -5,6 +5,7 @@ import { and, asc, desc, eq, gt, gte, inArray } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import { Agent, AgentExecution, AgentMemory, AgentModel, AgentTool, Attestation, Model, Tool } from './schema';
 import postgres from 'postgres';
+import * as schema from './schema';
 
 import {
   user,
@@ -43,8 +44,11 @@ const client = postgres(dbUrl, {
   ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : undefined,
 });
 
-// Initialize Drizzle
-export const db = drizzle(client);
+// Initialize Drizzle with the schema
+export const db = drizzle(client, { schema });
+
+// You can now use db directly for queries:
+// db.select().from(schema.user)...
 
 export async function getUser(email: string): Promise<Array<User>> {
   try {

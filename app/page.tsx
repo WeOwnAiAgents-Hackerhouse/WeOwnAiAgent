@@ -29,7 +29,7 @@ export default function HomePage() {
       {/* Hero Section */}
       <div className="max-w-4xl mx-auto text-center px-4 mt-32 mb-24">
         <div className="mb-12">
-          <Link href="https://twitter.com/yourusername" target="_blank">
+          <Link href="https://twitter.com/yonkseth" target="_blank">
             <Button variant="outline" className="rounded-full bg-[#1a1b2e] text-white border-none hover:bg-[#2a2b3e]">
               Follow along our channel
             </Button>
@@ -47,12 +47,7 @@ export default function HomePage() {
         <div className="flex gap-4 mt-8 justify-center">
           <Link href="/login">
             <Button className="bg-white text-[#0a0b14] hover:bg-gray-200">
-              Sign In
-            </Button>
-          </Link>
-          <Link href="/register">
-            <Button variant="outline" className="border-white text-white hover:bg-gray-800">
-              Sign Up
+              Get Started
             </Button>
           </Link>
         </div> 
