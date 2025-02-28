@@ -9,10 +9,10 @@
     "watch": "tsc -w",
     "test": "jest",
     "cdk": "cdk",
-    "deploy": "cdk deploy",
-    "destroy": "cdk destroy",
-    "synth": "cdk synth",
-    "diff": "cdk diff"
+    "deploy": "pnpx cdk deploy",
+    "destroy": "pnpx cdk destroy",
+    "synth": "pnpx cdk synth",
+    "diff": "pnpx cdk diff"
   },
   "devDependencies": {
     "@aws-cdk/aws-amplify-alpha": "2.181.1-alpha.0",
