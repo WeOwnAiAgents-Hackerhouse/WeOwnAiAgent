@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import oktaAuth from '@/lib/oktaClient';
+//import oktaAuth from '@/lib/oktaClient';
 
 export default function Callback() {
   const router = useRouter();
@@ -10,7 +10,7 @@ export default function Callback() {
   useEffect(() => {
     const handleAuthentication = async () => {
       try {
-        const tokens = await oktaAuth.handleAuthentication();
+        //const tokens = await oktaAuth.handleAuthentication();
         // Store tokens or handle session
         router.push('/'); // Redirect to home or desired page
       } catch (error) {
