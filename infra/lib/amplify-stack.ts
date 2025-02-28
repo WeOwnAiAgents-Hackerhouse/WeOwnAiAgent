@@ -65,8 +65,10 @@ export class AmplifyStack extends cdk.Stack {
                 'ssh-keyscan github.com >> ~/.ssh/known_hosts',
                 'git config --global url."git@github.com:".insteadOf "https://github.com/"',
                 
-                // Continue with the existing commands
-                'npm ci',
+                // Install pnpm and use it instead of npm ci
+                'npm install -g pnpm',
+                'pnpm install',
+                
                 // Get secrets during build time
                 'export OPENAI_API_KEY=$(aws secretsmanager get-secret-value --secret-id agent-box-app-secrets --query SecretString --output text | jq -r \'.OPENAI_API_KEY\')',
                 'export FIREWORKS_API_KEY=$(aws secretsmanager get-secret-value --secret-id agent-box-app-secrets --query SecretString --output text | jq -r \'.FIREWORKS_API_KEY\')',
@@ -78,12 +80,12 @@ export class AmplifyStack extends cdk.Stack {
                 'echo "AUTH_SECRET=${AUTH_SECRET}" >> .env',
                 'echo "DATABASE_URL=${POSTGRES_URL}" >> .env',
                 'echo "S3_BUCKET_NAME=${S3_BUCKET_NAME}" >> .env',
-                'npm run db:migrate', // Run database migrations
+                'pnpm run db:migrate', // Run database migrations with pnpm
               ],
             },
             build: {
               commands: [
-                'npm run build',
+                'pnpm run build',
               ],
             },
           },
@@ -92,7 +94,7 @@ export class AmplifyStack extends cdk.Stack {
             files: ['**/*'],
           },
           cache: {
-            paths: ['node_modules/**/*', '.next/cache/**/*'],
+            paths: ['node_modules/**/*', '.next/cache/**/*', '.pnpm-store/**/*'],
           },
         },
       }),
