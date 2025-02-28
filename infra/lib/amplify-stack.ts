@@ -46,13 +46,7 @@ export class AmplifyStack extends cdk.Stack {
         repository: process.env.GITHUB_REPO || 'WeOwnAiAgent',
         oauthToken: cdk.SecretValue.secretsManager('github-token'),
       }),
-      
-      // Enable access logs for better visibility
-      accessLogs: {
-        enabled: true,
-      },
-      
-      // Enable auto branch creation for feature branches
+      // Access logs are not a valid property for the Amplify app. Removing accessLogs configuration.
       autoBranchCreation: {
         patterns: ['feature/*', 'release/*'],
         basicAuth: amplify.BasicAuth.fromGeneratedPassword('admin'),
