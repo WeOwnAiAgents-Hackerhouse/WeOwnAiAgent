@@ -34,14 +34,20 @@ export class AmplifyStack extends cdk.Stack {
       },
     });
 
-    // Create an Amplify app
+    // Create an Amplify app with updated GitHub integration
     const amplifyApp = new amplify.App(this, 'AgentBoxApp', {
       appName: 'WeOwnAgentBox',
+      
+      // Use the newer GitHub integration method
       sourceCodeProvider: new amplify.GitHubSourceCodeProvider({
-        owner: process.env.GITHUB_OWNER || 'your-github-username', // Replace with your GitHub username or use env var
-        repository: process.env.GITHUB_REPO || 'your-repo-name',    // Replace with your repository name or use env var
-        oauthToken: cdk.SecretValue.secretsManager('github-token'), // Create this secret manually in AWS Secrets Manager
+        owner: process.env.GITHUB_OWNER || 'WeOwnAiAgents-Hackerhouse',
+        repository: process.env.GITHUB_REPO || 'WeOwnAiAgent',
+        oauthToken: cdk.SecretValue.secretsManager('github-token'),
       }),
+      
+      // Add this property to use the newer GitHub integration
+      platform: amplify.Platform.WEB_COMPUTE,
+      
       environmentVariables: {
         NODE_ENV: 'production',
         S3_BUCKET_NAME: props.storageBucket.bucketName,
@@ -52,6 +58,14 @@ export class AmplifyStack extends cdk.Stack {
           phases: {
             preBuild: {
               commands: [
+                // Set up SSH for GitHub access using the private key
+                'mkdir -p ~/.ssh',
+                'aws secretsmanager get-secret-value --secret-id github-private-key --query SecretString --output text > ~/.ssh/id_rsa',
+                'chmod 600 ~/.ssh/id_rsa',
+                'ssh-keyscan github.com >> ~/.ssh/known_hosts',
+                'git config --global url."git@github.com:".insteadOf "https://github.com/"',
+                
+                // Continue with the existing commands
                 'npm ci',
                 // Get secrets during build time
                 'export OPENAI_API_KEY=$(aws secretsmanager get-secret-value --secret-id agent-box-app-secrets --query SecretString --output text | jq -r \'.OPENAI_API_KEY\')',
@@ -88,7 +102,7 @@ export class AmplifyStack extends cdk.Stack {
     const amplifyRole = new iam.Role(this, 'AmplifyRole', {
       assumedBy: new iam.ServicePrincipal('amplify.amazonaws.com'),
       managedPolicies: [
-        iam.ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSAmplifyFullAccess'),
+        iam.ManagedPolicy.fromAwsManagedPolicyName('AdministratorAccess-Amplify'),
       ],
     });
     
@@ -98,6 +112,20 @@ export class AmplifyStack extends cdk.Stack {
     
     // Grant S3 bucket permissions
     props.storageBucket.grantReadWrite(amplifyRole);
+    
+    // Add specific permissions for Secrets Manager and database operations
+    amplifyRole.addToPolicy(new iam.PolicyStatement({
+      effect: iam.Effect.ALLOW,
+      actions: [
+        'secretsmanager:GetSecretValue',
+      ],
+      resources: [
+        appSecrets.secretArn,
+        props.databaseSecret.secretArn,
+        // Add the github-private-key secret ARN
+        `arn:aws:secretsmanager:${this.region}:${this.account}:secret:github-private-key*`,
+      ],
+    }));
 
     // Add environment variables that aren't secrets
     amplifyApp.addEnvironment('DATABASE_ENDPOINT', props.databaseEndpoint);
