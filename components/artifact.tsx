@@ -201,7 +201,7 @@ function PureArtifact({
     [document, debouncedHandleContentChange, handleContentChange],
   );
 
-  function getDocumentContentById(index: number) {
+  function getDocumentContentById(index: number): string {
     if (!documents) return '';
     if (!documents[index]) return '';
     return documents[index].content ?? '';

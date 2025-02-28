@@ -12,43 +12,37 @@ export async function POST(req: NextRequest) {
     
     // Verify the signature
     const siweMessage = new SiweMessage(message);
-    let verifyResult;
+    let verifyResult: { success: boolean; data?: SiweMessage; error?: any } = { success: false };
     try {
       verifyResult = await siweMessage.verify({
         signature,
         nonce,
       });
-    } catch (verifyError) {
-      console.error('SIWE verification error:', verifyError);
-      return NextResponse.json({ error: 'Error verifying signature' }, { status: 422 });
+    } catch (error) {
+      return NextResponse.json(
+        { error: 'Failed to verify signature' },
+        { status: 422 }
+      );
     }
     
     if (!verifyResult.success) {
-      return NextResponse.json({ error: 'Invalid signature' }, { status: 422 });
+      return NextResponse.json(
+        { error: 'Invalid signature' },
+        { status: 422 }
+      );
     }
     
-    // Get the wallet address from the verified message
-    const address = verifyResult.data.address;
+    // Authentication successful
+    const address = verifyResult.data?.address;
     
-    // Create response with success message
+    // Create a response with the address
     const response = NextResponse.json({ 
-      success: true, 
-      address,
-      redirectUrl: '/dashboard', // Redirect to dashboard
-      message: 'Authentication successful! No database registration required.'
+      success: true,
+      address 
     });
     
-    // Remove the nonce cookie
-    response.cookies.set('siwe-nonce', '', {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      maxAge: 0,
-      path: '/',
-    });
-    
-    // Set the wallet-auth cookie with the address as the value
-    response.cookies.set('wallet-auth', address, {
+    // Set a cookie to maintain the session
+    response.cookies.set('siwe-address', address as string, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
@@ -61,4 +55,4 @@ export async function POST(req: NextRequest) {
     console.error('SIWE verification error:', error);
     return NextResponse.json({ error: 'Verification failed' }, { status: 500 });
   }
-} 
+}

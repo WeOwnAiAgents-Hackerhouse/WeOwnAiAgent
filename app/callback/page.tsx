@@ -2,7 +2,8 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-//import oktaAuth from '@/lib/oktaClient';
+// Import the Okta client if needed, or remove the comment
+// import oktaAuth from '@/lib/oktaClient';
 
 export default function Callback() {
   const router = useRouter();
@@ -10,9 +11,8 @@ export default function Callback() {
   useEffect(() => {
     const handleAuthentication = async () => {
       try {
-        //const tokens = await oktaAuth.handleAuthentication();
-        // Store tokens or handle session
-        router.push('/'); // Redirect to home or desired page
+        // Add your authentication handling logic here
+        router.push('/dashboard');
       } catch (error) {
         console.error('Error handling authentication:', error);
       }
@@ -22,4 +22,4 @@ export default function Callback() {
   }, [router]);
 
   return <div>Loading...</div>;
-} 
+}

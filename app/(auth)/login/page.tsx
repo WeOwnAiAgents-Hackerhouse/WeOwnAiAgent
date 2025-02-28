@@ -88,7 +88,7 @@ export default function Page() {
       
       toast.success('Wallet authenticated successfully!');
       
-      // Explicitly navigate to the dashboard
+      // Redirect to dashboard after successful authentication
       router.push('/dashboard');
     } catch (error) {
       console.error('Login error:', error);
