@@ -1,0 +1,26 @@
+{
+  "name": "@weown/api",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --port 3001",
+    "build": "next build",
+    "start": "next start --port 3001",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@weown/database": "*",
+    "next": "latest",
+    "next-auth": "latest",
+    "ai": "latest",
+    "zod": "latest",
+    "drizzle-orm": "latest"
+  },
+  "devDependencies": {
+    "@weown/config": "*",
+    "@types/node": "latest",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "typescript": "latest"
+  }
+} 

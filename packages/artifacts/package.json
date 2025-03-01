@@ -1,0 +1,18 @@
+{
+  "name": "@weown/artifacts",
+  "version": "0.1.0",
+  "private": true,
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "dependencies": {
+    "@weown/system-design": "*",
+    "ai": "latest",
+    "react": "latest",
+    "react-dom": "latest"
+  },
+  "devDependencies": {
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "typescript": "latest"
+  }
+} 

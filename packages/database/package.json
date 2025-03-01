@@ -1,0 +1,23 @@
+{
+  "name": "@weown/database",
+  "version": "0.1.0",
+  "private": true,
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "scripts": {
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push --skip-generate",
+    "db:studio": "prisma studio"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.4.1",
+    "drizzle-orm": "^0.34.0",
+    "nanoid": "^5.0.8",
+    "next-auth": "^5.0.0-beta.25",
+    "bcrypt-ts": "^5.0.2"
+  },
+  "devDependencies": {
+    "prisma": "^6.4.1",
+    "typescript": "~5.1.3"
+  }
+}

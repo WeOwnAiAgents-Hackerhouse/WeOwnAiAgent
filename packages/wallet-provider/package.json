@@ -1,0 +1,19 @@
+{
+  "name": "@weown/wallet-provider",
+  "version": "0.1.0",
+  "private": true,
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "dependencies": {
+    "wagmi": "latest",
+    "connectkit": "latest",
+    "siwe": "latest",
+    "react": "latest",
+    "react-dom": "latest"
+  },
+  "devDependencies": {
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "typescript": "latest"
+  }
+} 

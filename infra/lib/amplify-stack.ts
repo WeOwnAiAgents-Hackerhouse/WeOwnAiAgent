@@ -36,48 +36,25 @@ export class AmplifyStack extends cdk.Stack {
       },
     });
 
-    // Create an Amplify app with updated GitHub integration
-    const amplifyApp = new amplify.App(this, 'AgentBoxApp', {
-      appName: 'WeOwnAgentBox',
-      
-      // Use the newer GitHub integration method
+    // Create the Amplify app
+    const amplifyApp = new amplify.App(this, 'WeOwnAgentBox', {
       sourceCodeProvider: new amplify.GitHubSourceCodeProvider({
-        owner: process.env.GITHUB_OWNER || 'WeOwnAiAgents-Hackerhouse',
-        repository: process.env.GITHUB_REPO || 'WeOwnAiAgent',
+        owner: 'WeOwnAiAgents-Hackerhouse',
+        repository: 'WeOwnAiAgent',
         oauthToken: cdk.SecretValue.secretsManager('github-token'),
       }),
-      // Access logs are not a valid property for the Amplify app. Removing accessLogs configuration.
-      autoBranchCreation: {
-        patterns: ['feature/*', 'release/*'],
-        basicAuth: amplify.BasicAuth.fromGeneratedPassword('admin'),
-      },
-      
-      platform: amplify.Platform.WEB_COMPUTE,
-      
-      environmentVariables: {
-        NODE_ENV: 'production',
-        S3_BUCKET_NAME: props.storageBucket.bucketName,
-      },
       buildSpec: codebuild.BuildSpec.fromObjectToYaml({
         version: '1.0',
         frontend: {
           phases: {
             preBuild: {
               commands: [
-                // Set up SSH for GitHub access using the private key
-                'mkdir -p ~/.ssh',
-                'aws secretsmanager get-secret-value --secret-id github-private-key --query SecretString --output text > ~/.ssh/id_rsa',
-                'chmod 600 ~/.ssh/id_rsa',
-                'ssh-keyscan github.com >> ~/.ssh/known_hosts',
-                'git config --global url."git@github.com:".insteadOf "https://github.com/"',
-                
                 // Install pnpm and use it instead of npm ci
                 'npm install -g pnpm',
                 'pnpm install',
                 
                 // Get secrets during build time
                 'export OPENAI_API_KEY=$(aws secretsmanager get-secret-value --secret-id agent-box-app-secrets --query SecretString --output text | jq -r \'.OPENAI_API_KEY\')',
-                'export FIREWORKS_API_KEY=$(aws secretsmanager get-secret-value --secret-id agent-box-app-secrets --query SecretString --output text | jq -r \'.FIREWORKS_API_KEY\')',
                 'export AUTH_SECRET=$(aws secretsmanager get-secret-value --secret-id agent-box-app-secrets --query SecretString --output text | jq -r \'.AUTH_SECRET\')',
                 'export DB_PASSWORD=$(aws secretsmanager get-secret-value --secret-id chatbot-db-credentials --query SecretString --output text | jq -r \'.password\')',
                 
@@ -88,11 +65,9 @@ export class AmplifyStack extends cdk.Stack {
                 
                 // Create .env file for the build process
                 'echo "OPENAI_API_KEY=${OPENAI_API_KEY}" > .env',
-                'echo "FIREWORKS_API_KEY=${FIREWORKS_API_KEY}" >> .env',
                 'echo "AUTH_SECRET=${AUTH_SECRET}" >> .env',
                 'echo "DATABASE_URL=${DATABASE_URL}" >> .env',
                 'echo "POSTGRES_URL=${POSTGRES_URL}" >> .env',
-                'echo "S3_BUCKET_NAME=${S3_BUCKET_NAME}" >> .env',
                 'echo "NODE_ENV=production" >> .env',
                 
                 // Create .env.local as a backup in case some scripts look for it specifically
@@ -177,8 +152,7 @@ export class AmplifyStack extends cdk.Stack {
 
     // Output the Amplify app URL
     this.appUrl = new cdk.CfnOutput(this, 'AmplifyAppURL', {
-      value: `https://${mainBranch.branchName}.${amplifyApp.defaultDomain}`,
-      description: 'URL of the Amplify application',
+      value: `https://${mainBranch.branchName}.${amplifyApp.appId}.amplifyapp.com`,
     });
 
     // Output the Amplify Console URL for easy access

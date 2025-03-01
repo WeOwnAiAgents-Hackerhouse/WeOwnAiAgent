@@ -1,0 +1,33 @@
+{
+  "name": "@weown/web",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@weown/database": "*",
+    "@weown/system-design": "*",
+    "@weown/wallet-provider": "*",
+    "@weown/okto-integration": "*",
+    "next": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "next-auth": "latest",
+    "ai": "latest",
+    "sonner": "latest"
+  },
+  "devDependencies": {
+    "@weown/config": "*",
+    "@types/node": "latest",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "typescript": "latest",
+    "autoprefixer": "latest",
+    "postcss": "latest",
+    "tailwindcss": "latest"
+  }
+} 
