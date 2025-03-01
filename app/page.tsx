@@ -75,7 +75,7 @@ export default function HomePage() {
       <footer className="w-full py-8 bg-zinc-900/50">
         <div className="max-w-6xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center">
           <div className="text-gray-400 mb-4 md:mb-0">
-            © 2023 WeOwn Agent Box. All rights reserved.
+            © 2025 WeOwn Agent Box. MIT license
           </div>
           <div className="flex space-x-6">
             <Link href="#" className="text-gray-400 hover:text-white">Terms</Link>

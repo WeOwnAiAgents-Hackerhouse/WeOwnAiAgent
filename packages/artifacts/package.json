@@ -6,13 +6,13 @@
   "types": "./index.ts",
   "dependencies": {
     "@weown/system-design": "*",
-    "ai": "latest",
-    "react": "latest",
-    "react-dom": "latest"
+    "ai": "4.1.44",
+    "react": "19.0.0-rc-45804af1-20241021",
+    "react-dom": "19.0.0-rc-45804af1-20241021"
   },
   "devDependencies": {
-    "@types/react": "latest",
-    "@types/react-dom": "latest",
-    "typescript": "latest"
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "typescript": "^5.6.3"
   }
 } 

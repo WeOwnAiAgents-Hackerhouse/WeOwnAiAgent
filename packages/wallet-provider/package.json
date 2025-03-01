@@ -5,15 +5,15 @@
   "main": "./index.ts",
   "types": "./index.ts",
   "dependencies": {
-    "wagmi": "latest",
-    "connectkit": "latest",
-    "siwe": "latest",
-    "react": "latest",
-    "react-dom": "latest"
+    "wagmi": "^1.4.13",
+    "connectkit": "^1.8.2",
+    "siwe": "^2.1.4",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
-    "@types/react": "latest",
-    "@types/react-dom": "latest",
-    "typescript": "latest"
+    "@types/react": "^18.2.48",
+    "@types/react-dom": "^18.2.18",
+    "typescript": "^5.1.3"
   }
 } 

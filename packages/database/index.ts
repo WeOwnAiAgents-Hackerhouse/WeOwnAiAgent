@@ -1,5 +1,5 @@
-export * from './lib/db/schema';
-export * from './lib/db/queries';
+//export * from './lib/db/schema';
+//export * from './lib/db/queries';
 export * from './lib/auth/drizzle-adapter';
 export * from './lib/types';
 

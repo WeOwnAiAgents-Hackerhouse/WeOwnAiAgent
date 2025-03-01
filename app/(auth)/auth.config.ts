@@ -1,6 +1,7 @@
 import type { NextAuthConfig } from 'next-auth';
 import GitHub from 'next-auth/providers/github';
 import Credentials from 'next-auth/providers/credentials';
+import { getUser } from '@/lib/db/queries';
 
 export const authConfig: NextAuthConfig = {
   pages: {
