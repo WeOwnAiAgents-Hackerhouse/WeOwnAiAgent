@@ -1,0 +1,10 @@
+---
+description: packages
+globs: 
+alwaysApply: false
+---
+
+# Your rule content
+
+- You can add all the files from package/ here
+- You can use markdown but dont have to.

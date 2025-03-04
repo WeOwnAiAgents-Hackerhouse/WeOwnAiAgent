@@ -1,26 +1,32 @@
 {
-  "name": "@weown/api",
+  "name": "@myira/api",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --port 3001",
-    "build": "next build",
-    "start": "next start --port 3001",
-    "lint": "next lint"
+    "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "lint": "eslint src --ext .ts",
+    "clean": "rm -rf dist node_modules"
   },
   "dependencies": {
-    "@weown/database": "*",
-    "next": "latest",
-    "next-auth": "latest",
-    "ai": "latest",
-    "zod": "latest",
-    "drizzle-orm": "latest"
+    "@myira/portfolio-service": "workspace:*",
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "helmet": "^7.1.0",
+    "morgan": "^1.10.0",
+    "axios": "^1.6.2",
+    "ethers": "^6.8.1",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
-    "@weown/config": "*",
-    "@types/node": "latest",
-    "@types/react": "latest",
-    "@types/react-dom": "latest",
-    "typescript": "latest"
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/morgan": "^1.9.9",
+    "@types/node": "^20.10.5",
+    "eslint": "^8.56.0",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.1.3"
   }
 } 

@@ -1,0 +1,23 @@
+{
+  "name": "@weown/cdp-integration",
+  "version": "0.1.0",
+  "private": true,
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "dependencies": {
+    "@weown/auth": "workspace:*",
+    "@weown/database": "workspace:*",
+    "@weown/okto-integration": "workspace:*",
+    "@weown/wallet-provider": "workspace:*",
+    "ai": "^2.2.12",
+    "langchain": "^0.0.156",
+    "zod": "^3.22.4",
+    "react": "19.0.0-rc-45804af1-20241021",
+    "react-dom": "19.0.0-rc-45804af1-20241021"
+  },
+  "devDependencies": {
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "typescript": "^5.6.3"
+  }
+} 

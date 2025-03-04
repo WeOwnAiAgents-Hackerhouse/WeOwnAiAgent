@@ -1,0 +1,24 @@
+{
+  "name": "@myira/portfolio-service",
+  "version": "0.1.0",
+  "private": true,
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "dependencies": {
+    "axios": "^1.6.2",
+    "ethers": "^6.8.1",
+    "swr": "^2.2.4",
+    "wagmi": "^1.4.13",
+    "zod": "^3.22.4"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.5",
+    "@types/react": "^18.2.48",
+    "@types/react-dom": "^18.2.18",
+    "typescript": "^5.1.3"
+  }
+} 

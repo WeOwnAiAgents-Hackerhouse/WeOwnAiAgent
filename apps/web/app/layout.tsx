@@ -1,21 +1,23 @@
 import React from 'react';
-import { Web3Provider } from '@weown/wallet-provider';
-import { OktoProvider } from '@weown/okto-integration';
+import './globals.css';
+import type { Metadata } from 'next';
 
-export default function RootLayout({
-  children,
-}: {
+export const metadata: Metadata = {
+  title: 'MyIRA - Your Intelligent Retirement Assistant',
+  description: 'Manage your crypto portfolio across multiple chains for long-term growth and retirement planning.',
+};
+
+interface RootLayoutProps {
   children: React.ReactNode;
-}) {
+}
+
+export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en">
       <body>
-        <Web3Provider>
-          <OktoProvider>
-            {children}
-          </OktoProvider>
-        </Web3Provider>
+        {children}
       </body>
     </html>
   );
-} 
+}
+

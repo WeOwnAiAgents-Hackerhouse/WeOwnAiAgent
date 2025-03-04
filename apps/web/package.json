@@ -1,33 +1,42 @@
 {
-  "name": "@weown/web",
+  "name": "@myira/web",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "clean": "rm -rf .next node_modules"
   },
   "dependencies": {
-    "@weown/database": "*",
-    "@weown/system-design": "*",
-    "@weown/wallet-provider": "*",
-    "@weown/okto-integration": "*",
-    "next": "latest",
-    "react": "latest",
-    "react-dom": "latest",
-    "next-auth": "latest",
-    "ai": "latest",
-    "sonner": "latest"
+    "@myira/portfolio-service": "workspace:*",
+    "@myira/providers": "workspace:*",
+    "@myira/ui": "workspace:*",
+    "@myira/utils": "workspace:*",
+    "@myira/hooks": "workspace:*",
+    "next": "^14.0.4",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "axios": "^1.6.2",
+    "ethers": "^6.8.1",
+    "wagmi": "^1.4.13",
+    "swr": "^2.2.4",
+    "zod": "^3.22.4",
+    "ai": "^2.2.31",
+    "openai": "^4.24.1",
+    "react-markdown": "^9.0.1",
+    "recharts": "^2.10.3"
   },
   "devDependencies": {
-    "@weown/config": "*",
-    "@types/node": "latest",
-    "@types/react": "latest",
-    "@types/react-dom": "latest",
-    "typescript": "latest",
-    "autoprefixer": "latest",
-    "postcss": "latest",
-    "tailwindcss": "latest"
+    "@types/node": "^20.10.5",
+    "@types/react": "^18.2.48",
+    "@types/react-dom": "^18.2.18",
+    "autoprefixer": "^10.4.16",
+    "eslint": "^8.56.0",
+    "eslint-config-next": "^14.0.4",
+    "postcss": "^8.4.32",
+    "tailwindcss": "^3.4.0",
+    "typescript": "^5.1.3"
   }
 } 

@@ -10,7 +10,7 @@ interface ExtendedSession extends Session {
   user: User;
 }
 
-export const { auth, signIn, signOut } = NextAuth({
+export const { auth, signIn, signOut, GET, POST } = NextAuth({
   ...authConfig,
   providers: [
     ...authConfig.providers,
@@ -19,14 +19,15 @@ export const { auth, signIn, signOut } = NextAuth({
         if (!credentials?.email || !credentials?.password) return null;
 
         const user = await getUser({ email: credentials.email });
-        if (!user) return null;
 
-        const passwordsMatch = await compare(
+        if (!user || !user.password) return null;
+
+        const isPasswordValid = await compare(
           credentials.password,
-          user.password || '',
+          user.password
         );
 
-        if (!passwordsMatch) return null;
+        if (!isPasswordValid) return null;
 
         return {
           id: user.id,
@@ -47,7 +48,7 @@ export const { auth, signIn, signOut } = NextAuth({
     },
     session({
       session,
-      token: any,
+      token,
     }) {
       if (session.user) {
         session.user.id = token.id as string;
