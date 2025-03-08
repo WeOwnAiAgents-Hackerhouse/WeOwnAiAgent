@@ -30,6 +30,15 @@ export function truncateString(str: string, length: number): string {
   return `${str.substring(0, length)}...`;
 }
 
+
+/**
+ * Generate a UUID
+ */
+export function generateUUID(): string {
+  return crypto.randomUUID();
+}
+
+
 /**
  * Truncate an Ethereum address
  */

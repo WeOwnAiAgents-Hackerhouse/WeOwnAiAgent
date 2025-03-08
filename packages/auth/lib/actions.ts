@@ -3,7 +3,7 @@
 import { z } from 'zod';
 import { hash } from 'bcrypt-ts';
 
-import { createUser, getUser } from '@weown/database';
+import { createUser, getUser } from '@myira/database';
 
 import { signIn } from './auth';
 

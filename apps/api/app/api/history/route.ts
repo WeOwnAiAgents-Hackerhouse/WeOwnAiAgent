@@ -1,5 +1,5 @@
-import { auth } from '@weown/auth';
-import { getChatsByUserId } from '@weown/database';
+import { auth } from '@myira/auth';
+import { getChatsByUserId } from '@myira/database';
 
 export async function GET() {
   const session = await auth();

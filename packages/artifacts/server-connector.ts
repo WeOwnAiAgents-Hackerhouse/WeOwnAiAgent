@@ -1,4 +1,4 @@
-import { ArtifactKind } from '@weown/system-design';
+import { ArtifactKind } from '@myira/system-design';
 
 export interface DocumentRequestProps {
   id: string;

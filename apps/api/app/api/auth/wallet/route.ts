@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { verifyWalletSignature, logoutWallet } from '@weown/auth';
+import { verifyWalletSignature, logoutWallet } from '@myira/auth';
 
 export async function POST(request: NextRequest) {
   try {

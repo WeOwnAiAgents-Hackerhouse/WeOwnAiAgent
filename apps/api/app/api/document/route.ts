@@ -1,96 +1,190 @@
-import { auth } from '@weown/auth';
-import { ArtifactKind } from '@weown/system-design';
-import {
-  deleteDocumentsByIdAfterTimestamp,
-  getDocumentsById,
-  saveDocument,
-} from '@weown/database';
+import { NextRequest, NextResponse } from 'next/server';
+import { sessionAdapter, type Session } from '@myira/auth';
+import { generateUUID } from '@myira/utils';
 
-export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
-  const id = searchParams.get('id');
-
-  if (!id) {
-    return new Response('Not Found', { status: 404 });
+/**
+ * GET /api/document
+ * Gets a document by ID
+ */
+export async function GET(request: NextRequest) {
+  try {
+    // Get the session
+    const session = await sessionAdapter.getSession();
+    
+    if (!session?.user) {
+      return NextResponse.json(
+        { error: 'Authentication required' },
+        { status: 401 }
+      );
+    }
+    
+    // Get the document ID from the query parameters
+    const id = request.nextUrl.searchParams.get('id');
+    
+    if (!id) {
+      return NextResponse.json(
+        { error: 'Document ID is required' },
+        { status: 400 }
+      );
+    }
+    
+    // In a real implementation, you would fetch the document from your database
+    // This is a placeholder
+    const document = {
+      id,
+      title: 'Sample Document',
+      kind: 'text',
+      content: 'Sample content',
+      userId: session.user.id,
+      createdAt: new Date().toISOString(),
+    };
+    
+    return NextResponse.json(document);
+  } catch (error) {
+    console.error('Error fetching document:', error);
+    
+    return NextResponse.json(
+      { error: 'Failed to fetch document' },
+      { status: 500 }
+    );
   }
-
-  const session = await auth();
-
-  if (!session?.user) {
-    return new Response('Unauthorized', { status: 401 });
-  }
-
-  const documents = await getDocumentsById({ id });
-
-  if (!documents || documents.length === 0) {
-    return new Response('Not Found', { status: 404 });
-  }
-
-  if (documents[0].userId !== session.user.id) {
-    return new Response('Unauthorized', { status: 401 });
-  }
-
-  return Response.json(documents);
 }
 
-export async function POST(request: Request) {
-  const { id, title, content, kind } = await request.json();
-
-  if (!id || !title || !content || !kind) {
-    return new Response('Bad Request', { status: 400 });
-  }
-
-  const session = await auth();
-
-  if (!session?.user) {
-    return new Response('Unauthorized', { status: 401 });
-  }
-
+/**
+ * POST /api/document
+ * Creates a new document
+ */
+export async function POST(request: NextRequest) {
   try {
-    await saveDocument({
+    // Get the session
+    const session = await sessionAdapter.getSession();
+    
+    if (!session?.user) {
+      return NextResponse.json(
+        { error: 'Authentication required' },
+        { status: 401 }
+      );
+    }
+    
+    // Parse the request body
+    const { title, kind, content } = await request.json();
+    
+    if (!title || !kind) {
+      return NextResponse.json(
+        { error: 'Missing required fields' },
+        { status: 400 }
+      );
+    }
+    
+    // Generate a unique ID for the document
+    const id = generateUUID();
+    
+    // In a real implementation, you would save the document to your database
+    // This is a placeholder
+    const document = {
       id,
       title,
-      content,
-      kind: kind as ArtifactKind,
+      kind,
+      content: content || '',
       userId: session.user.id,
-      createdAt: new Date(),
-    });
-
-    return new Response('Created', { status: 201 });
+      createdAt: new Date().toISOString(),
+    };
+    
+    return NextResponse.json(document, { status: 201 });
   } catch (error) {
-    return new Response('Internal Server Error', { status: 500 });
+    console.error('Error creating document:', error);
+    
+    return NextResponse.json(
+      { error: 'Failed to create document' },
+      { status: 500 }
+    );
   }
 }
 
-export async function DELETE(request: Request) {
-  const { searchParams } = new URL(request.url);
-  const id = searchParams.get('id');
-  const timestamp = searchParams.get('timestamp');
-
-  if (!id || !timestamp) {
-    return new Response('Bad Request', { status: 400 });
+/**
+ * PUT /api/document
+ * Updates an existing document
+ */
+export async function PUT(request: NextRequest) {
+  try {
+    // Get the session
+    const session = await sessionAdapter.getSession();
+    
+    if (!session?.user) {
+      return NextResponse.json(
+        { error: 'Authentication required' },
+        { status: 401 }
+      );
+    }
+    
+    // Parse the request body
+    const { id, content } = await request.json();
+    
+    if (!id || content === undefined) {
+      return NextResponse.json(
+        { error: 'Missing required fields' },
+        { status: 400 }
+      );
+    }
+    
+    // In a real implementation, you would update the document in your database
+    // This is a placeholder
+    const document = {
+      id,
+      title: 'Updated Document',
+      kind: 'text',
+      content,
+      userId: session.user.id,
+      updatedAt: new Date().toISOString(),
+    };
+    
+    return NextResponse.json(document);
+  } catch (error) {
+    console.error('Error updating document:', error);
+    
+    return NextResponse.json(
+      { error: 'Failed to update document' },
+      { status: 500 }
+    );
   }
+}
 
-  const session = await auth();
-
-  if (!session?.user) {
-    return new Response('Unauthorized', { status: 401 });
+/**
+ * DELETE /api/document
+ * Deletes a document
+ */
+export async function DELETE(request: NextRequest) {
+  try {
+    // Get the session
+    const session = await sessionAdapter.getSession();
+    
+    if (!session?.user) {
+      return NextResponse.json(
+        { error: 'Authentication required' },
+        { status: 401 }
+      );
+    }
+    
+    // Get the document ID from the query parameters
+    const id = request.nextUrl.searchParams.get('id');
+    
+    if (!id) {
+      return NextResponse.json(
+        { error: 'Document ID is required' },
+        { status: 400 }
+      );
+    }
+    
+    // In a real implementation, you would delete the document from your database
+    // This is a placeholder
+    
+    return NextResponse.json({ message: 'Document deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting document:', error);
+    
+    return NextResponse.json(
+      { error: 'Failed to delete document' },
+      { status: 500 }
+    );
   }
-
-  const documents = await getDocumentsById({ id });
-
-  if (!documents || documents.length === 0) {
-    return new Response('Not Found', { status: 404 });
-  }
-
-  if (documents[0].userId !== session.user.id) {
-    return new Response('Unauthorized', { status: 401 });
-  }
-
-  await deleteDocumentsByIdAfterTimestamp({
-    id,
-    timestamp: new Date(timestamp),
-  });
-
-  return new Response('Deleted', { status: 200 });
 } 

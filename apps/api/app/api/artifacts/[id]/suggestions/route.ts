@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getSuggestionsByDocumentId } from '@weown/database';
+import { getSuggestionsByDocumentId } from '@myira/database';
 
 export async function GET(
   req: NextRequest,

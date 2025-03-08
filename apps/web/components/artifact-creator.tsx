@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { CreateArtifact, Artifact } from '@weown/system-design';
-import { textArtifact, codeArtifact, imageArtifact, sheetArtifact } from '@weown/artifacts';
-import { createArtifact, updateArtifact } from '@weown/artifacts/server-connector';
+import { CreateArtifact, Artifact } from '@myira/system-design';
+import { textArtifact, codeArtifact, imageArtifact, sheetArtifact } from '@myira/artifacts';
+import { createArtifact, updateArtifact } from '@myira/artifacts/server-connector';
 import { generateUUID } from '@/lib/utils';
 
 interface ArtifactCreatorProps {

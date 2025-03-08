@@ -1,5 +1,5 @@
 {
-  "name": "@weown/database",
+  "name": "@myira/database",
   "version": "0.1.0",
   "private": true,
   "main": "./index.ts",

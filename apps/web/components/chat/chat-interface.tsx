@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Button } from '@myira/ui';
+import { Button } from '@myira/system-design';
 import { useChat } from 'ai/react';
 import ReactMarkdown from 'react-markdown';
 

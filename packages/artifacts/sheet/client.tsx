@@ -1,4 +1,4 @@
-import { Artifact } from '@weown/system-design';
+import { Artifact } from '@myira/system-design';
 
 type Metadata = any;
 

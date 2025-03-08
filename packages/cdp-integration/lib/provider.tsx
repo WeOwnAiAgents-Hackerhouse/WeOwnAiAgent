@@ -1,9 +1,9 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { useOktoWallet } from '@weown/okto-integration';
-import { WalletProvider } from '@weown/wallet-provider';
-import { getWalletSession } from '@weown/auth';
+import { useOktoWallet } from '@myira/okto-integration';
+import { WalletProvider } from '@myira/wallet-provider';
+import { getWalletSession } from '@myira/auth';
 import { AgentMetadata, DataSourceMetadata } from './interfaces';
 import { AgentService } from './services/agent.service';
 import { DataSourceService } from './services/data-source.service';

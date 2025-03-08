@@ -15,3 +15,4 @@ export function truncateAddress(
   
   return `${address.slice(0, startLength)}...${address.slice(-endLength)}`;
 } 
+

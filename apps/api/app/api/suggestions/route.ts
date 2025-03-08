@@ -1,5 +1,5 @@
-import { auth } from '@weown/auth';
-import { getSuggestionsByDocumentId } from '@weown/database';
+import { auth } from '@myira/auth';
+import { getSuggestionsByDocumentId } from '@myira/database';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);

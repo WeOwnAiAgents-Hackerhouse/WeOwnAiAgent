@@ -13,9 +13,9 @@ A modular service for tracking crypto portfolio assets across multiple chains.
 ## Installation
 
 ```bash
-npm install @weown/portfolio-service
+npm install @myira/portfolio-service
 # or
-yarn add @weown/portfolio-service
+yarn add @myira/portfolio-service
 ```
 
 ## Usage
@@ -23,7 +23,7 @@ yarn add @weown/portfolio-service
 ### Basic Usage
 
 ```tsx
-import { PortfolioProvider, usePortfolio } from '@weown/portfolio-service';
+import { PortfolioProvider, usePortfolio } from '@myira/portfolio-service';
 
 // In your app root
 function App() {
@@ -115,7 +115,7 @@ import {
   TokenService, 
   NFTService, 
   StakingService 
-} from '@weown/portfolio-service';
+} from '@myira/portfolio-service';
 
 async function fetchPortfolio(address: string) {
   const apiKeys = {

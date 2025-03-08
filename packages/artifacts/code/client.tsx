@@ -1,4 +1,4 @@
-import { Artifact } from '@weown/system-design';
+import { Artifact } from '@myira/system-design';
 
 interface Metadata {
   outputs: Array<any>; // ConsoleOutput type would be defined in system-design

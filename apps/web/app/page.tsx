@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Button } from '@myira/ui';
+import { Button } from '@myira/system-design';
 import { truncateAddress } from '@myira/utils';
 import { useIsMobile } from '@myira/hooks';
 import { useAccount, useConnect, useDisconnect } from 'wagmi';

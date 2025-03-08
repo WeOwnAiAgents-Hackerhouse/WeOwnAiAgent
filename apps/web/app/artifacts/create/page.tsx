@@ -2,9 +2,8 @@
 
 import React, { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { ArtifactCreator } from '@/components/artifact-creator';
-import { ArtifactKind } from '@weown/system-design';
-
+import {  ArtifactKind }  from '@myira/system-design';
+import { ArtifactCreator } from '../../../components/artifact-creator';
 export default function CreateArtifactPage() {
   const router = useRouter();
   const searchParams = useSearchParams();

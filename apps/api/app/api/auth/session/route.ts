@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getWalletSession, auth } from '@weown/auth';
+import { getWalletSession, auth } from '@myira/auth';
 
 
 export async function GET() {

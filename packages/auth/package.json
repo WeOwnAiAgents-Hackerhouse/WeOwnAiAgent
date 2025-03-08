@@ -1,17 +1,19 @@
 {
-  "name": "@weown/auth",
+  "name": "@myira/auth",
   "version": "0.1.0",
   "private": true,
   "main": "./index.ts",
   "types": "./index.ts",
   "dependencies": {
-    "next-auth": "4.24.11",
     "bcrypt-ts": "^5.0.2",
+    "next": "^14.2.24",
+    "next-auth": "4.24.11",
+    "siwe": "^2.1.4",
     "zod": "^3.22.4",
-    "siwe": "^2.1.4"
+    "@myira/database": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^20.10.5",
     "typescript": "^5.3.3"
   }
-} 
+}

@@ -1,6 +1,6 @@
-import { ArtifactKind } from '@weown/system-design';
+import { ArtifactKind } from '@myira/system-design';
 import { DataStreamWriter } from 'ai';
-import { Document, saveDocument } from '@weown/database';
+import { Document, saveDocument } from '@myira/database';
 import { Session } from 'next-auth';
 
 export interface SaveDocumentProps {

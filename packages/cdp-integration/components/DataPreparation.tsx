@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { useDataSource } from '../lib/hooks/useDataSource';
 import { DataSourceMetadata } from '../lib/interfaces';
-import { Button, Input, Card, Tabs, Tab } from '@weown/system-design';
+import { Button, Input, Card, Tabs, Tab } from '@myira/system-design';
 
 interface DataPreparationProps {
   onSourceAdded?: (source: DataSourceMetadata) => void;

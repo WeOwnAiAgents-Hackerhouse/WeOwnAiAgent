@@ -1,0 +1,73 @@
+import { generateUUID } from '@myira/utils';
+import { DataStreamWriter, tool } from 'ai';
+import { z } from 'zod';
+import { type Session } from '@myira/auth';
+import { ArtifactKind } from '@myira/system-design';
+import { documentHandlersByArtifactKind } from '../../../lib/artifacts/server';
+
+// Define artifact kinds based on ArtifactKind type
+const artifactKinds = ['text', 'code', 'image', 'sheet'] as const;
+
+interface CreateDocumentProps {
+  session: Session;
+  dataStream: DataStreamWriter;
+}
+
+export const createDocument = ({ session, dataStream }: CreateDocumentProps) =>
+  tool({
+    description:
+      'Create a document for a writing or content creation activities. This tool will call other functions that will generate the contents of the document based on the title and kind.',
+    parameters: z.object({
+      title: z.string(),
+      kind: z.enum(artifactKinds as unknown as [string, ...string[]]),
+    }),
+    execute: async ({ title, kind }) => {
+      const id = generateUUID();
+
+      dataStream.writeData({
+        type: 'kind',
+        content: kind,
+      });
+
+      dataStream.writeData({
+        type: 'id',
+        content: id,
+      });
+
+      dataStream.writeData({
+        type: 'title',
+        content: title,
+      });
+
+      dataStream.writeData({
+        type: 'clear',
+        content: '',
+      });
+
+      const documentHandler = documentHandlersByArtifactKind.find(
+        (documentHandlerByArtifactKind) =>
+          documentHandlerByArtifactKind.kind === kind,
+      );
+
+      if (!documentHandler) {
+        throw new Error(`No document handler found for kind: ${kind}`);
+      }
+
+      await documentHandler.onCreateDocument({
+        id,
+        title,
+        dataStream,
+        session,
+      });
+
+      dataStream.writeData({ type: 'finish', content: '' });
+
+      return {
+        id,
+        title,
+        kind,
+        content: 'A document was created and is now visible to the user.',
+      };
+    },
+  });
+

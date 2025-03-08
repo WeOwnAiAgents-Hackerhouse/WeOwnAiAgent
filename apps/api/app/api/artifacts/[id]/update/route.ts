@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { streamResponse } from 'ai';
 import { documentHandlersByArtifactKind } from '../../../../../lib/artifacts/server';
-import { getDocumentById } from '@weown/database';
+import { getDocumentById } from '@myira/database';
 
 export async function POST(
   req: NextRequest,

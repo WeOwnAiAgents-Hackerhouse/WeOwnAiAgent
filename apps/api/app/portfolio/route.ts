@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import { PortfolioService } from '@weown/portfolio-service';
+import { PortfolioService } from '@myira/portfolio-service';
 
 // Input validation schema
 const portfolioRequestSchema = z.object({

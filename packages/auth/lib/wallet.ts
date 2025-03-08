@@ -2,7 +2,7 @@
 
 import { SiweMessage } from 'siwe';
 import { cookies } from 'next/headers';
-import { getUser, createUser } from '@weown/database';
+import { getUser, createUser } from '@myira/database';
 
 export async function verifyWalletSignature(
   message: string,

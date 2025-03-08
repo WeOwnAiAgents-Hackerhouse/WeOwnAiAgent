@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { usePortfolio } from '@weown/portfolio-service';
+import { usePortfolio } from '@myira/portfolio-service';
 import { PortfolioSummary } from './portfolio-summary';
 import { ChainPortfolioCard } from './chain-portfolio-card';
 import { LoadingSpinner } from '../ui/loading-spinner';

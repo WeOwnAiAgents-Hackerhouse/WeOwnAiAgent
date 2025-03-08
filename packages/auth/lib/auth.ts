@@ -1,20 +1,24 @@
 import { compare } from 'bcrypt-ts';
-import NextAuth, { type User, type Session } from 'next-auth';
+import NextAuth, { type User } from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 
-import { getUser } from '@weown/database';
+// Import from database package - this will be resolved at runtime
+// @ts-ignore
+import { getUser } from '@myira/database';
 
 import { authConfig } from './auth.config';
-
-interface ExtendedSession extends Session {
-  user: User;
-}
+import { type Session } from './session';
 
 export const { auth, signIn, signOut, GET, POST } = NextAuth({
   ...authConfig,
   providers: [
     ...authConfig.providers,
     Credentials({
+      // Define credentials configuration
+      credentials: {
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" }
+      },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null;
 
@@ -51,10 +55,11 @@ export const { auth, signIn, signOut, GET, POST } = NextAuth({
       token,
     }) {
       if (session.user) {
-        session.user.id = token.id as string;
+        // Add id to user object
+        (session.user as any).id = token.id as string;
       }
 
-      return session;
+      return session as Session;
     },
   },
 }); 

@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { UserPortfolio } from '@weown/portfolio-service';
+import { UserPortfolio } from '@myira/portfolio-service';
 import { formatCurrency } from '../../lib/format-utils';
 
 interface PortfolioSummaryProps {

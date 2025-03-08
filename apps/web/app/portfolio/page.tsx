@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useAccount } from 'wagmi';
-import { Button } from '@myira/ui';
+import { Button } from '@myira/system-design';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 

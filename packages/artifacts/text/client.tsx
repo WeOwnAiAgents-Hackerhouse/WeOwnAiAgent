@@ -1,5 +1,5 @@
-import { Artifact } from '@weown/system-design';
-import { Suggestion } from '@weown/database';
+import { Artifact } from '@myira/system-design';
+import { Suggestion } from '@myira/database';
 
 interface TextArtifactMetadata {
   suggestions: Array<Suggestion>;
@@ -53,7 +53,7 @@ export const textArtifact = new Artifact<'text', TextArtifactMetadata>({
     metadata,
   }) => {
     // Implement text content rendering here
-    // Would reference components from @weown/system-design
+    // Would reference components from @myira/system-design
     return <div>Text Editor Component</div>;
   },
   actions: [

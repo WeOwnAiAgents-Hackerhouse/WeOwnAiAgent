@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ChainPortfolio } from '@weown/portfolio-service';
+import { ChainPortfolio } from '@myira/portfolio-service';
 import { formatCurrency } from '../../lib/format-utils';
 
 interface ChainPortfolioCardProps {

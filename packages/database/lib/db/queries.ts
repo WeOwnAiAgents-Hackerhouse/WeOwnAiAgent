@@ -3,6 +3,12 @@ import { user, chat, message, document, vote, suggestion } from './schema';
 import { eq, and, desc, gt, lt } from 'drizzle-orm';
 import { nanoid } from 'nanoid';
 import { hash } from 'bcrypt-ts';
+import type { InferSelectModel } from 'drizzle-orm';
+
+
+
+export type Suggestion = InferSelectModel<typeof suggestion>;
+
 
 // User queries
 export async function getUser({ 
@@ -256,3 +262,17 @@ export async function saveSuggestion({
     createdAt: new Date(),
   });
 } 
+
+
+export async function saveSuggestions({
+  suggestions,
+}: {
+  suggestions: Array<Suggestion>;
+}) {
+  try {
+    return await db.insert(suggestion).values(suggestions);
+  } catch (error) {
+    console.error('Failed to save suggestions in database');
+    throw error;
+  }
+}

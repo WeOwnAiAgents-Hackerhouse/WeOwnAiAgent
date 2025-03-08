@@ -1,5 +1,5 @@
-import { auth } from '@weown/auth';
-import { getVotesByChatId, voteMessage } from '@weown/database';
+import { auth } from '@myira/auth';
+import { getVotesByChatId, voteMessage } from '@myira/database';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);

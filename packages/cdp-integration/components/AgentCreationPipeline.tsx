@@ -7,7 +7,7 @@ import { AgentTraining } from './AgentTraining';
 import { AgentTesting } from './AgentTesting';
 import { AgentDeployment } from './AgentDeployment';
 import { AgentMetadata, DataSourceMetadata } from '../lib/interfaces';
-import { Tabs, Tab, Button } from '@weown/system-design';
+import { Tabs, Tab, Button } from '@myira/system-design';
 
 type PipelineStep = 'data' | 'setup' | 'training' | 'testing' | 'deployment';
 
